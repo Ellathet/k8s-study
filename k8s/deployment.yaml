@@ -15,5 +15,18 @@ spec:
         app: "goserver"
     spec:
       containers:
-      - name: "goserver"
-        image: "mikhathet/hello-go:v2"
+        - name: "goserver"
+          image: "mikhathet/hello-go:v4.1"
+          envFrom:
+            - configMapRef:
+                name: goserver-env
+          volumeMounts:
+           - mountPath: "go/foods"
+             name: config
+      volumes:
+        - name: config
+          configMap:
+            name: goserver-foods
+            items: 
+             - key: foods
+               path: "foods.txt"
