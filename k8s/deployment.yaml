@@ -16,17 +16,26 @@ spec:
     spec:
       containers:
         - name: "goserver"
-          image: "mikhathet/hello-go:v4.1"
-          envFrom:
-            - configMapRef:
-                name: goserver-env
-          volumeMounts:
-           - mountPath: "go/foods"
-             name: config
-      volumes:
-        - name: config
-          configMap:
-            name: goserver-foods
-            items: 
-             - key: foods
-               path: "foods.txt"
+          image: "mikhathet/hello-go:v5.1"
+          livenessProbe: 
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 1
+            successThreshold: 1
+            initialDelaySeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 3
+            failureThreshold: 1
+            # initialDelaySeconds: 15
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 3
+            failureThreshold: 30
